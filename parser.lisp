@@ -75,7 +75,7 @@
          (consume)
          (consume-until (make-matcher (or (is #\") (is #\'))))
        (consume)))
-    (T (consume-until (make-matcher (is #\]))))))
+    (t (consume-until (make-matcher (is #\]))))))
 
 (defun read-attribute-constraint ()
   "Reads a complete attribute constraint and returns it."
@@ -116,7 +116,7 @@
     (#\[ (read-attribute-constraint))
     (#\: (read-pseudo-constraint))
     (#\^ (read-type-constraint))
-    (T (unread) (read-tag-constraint))))
+    (t (unread) (read-tag-constraint))))
 
 (defun read-matcher ()
   "Read a matcher (a sequence of constraints) and return it."

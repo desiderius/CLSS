@@ -21,9 +21,20 @@
 (defun make-tag-constraint (tag)
   `(:c-tag ,tag))
 
+(defun find-symbol* (name &optional (package *package*))
+  (find-symbol
+   #+allegro
+   (funcall (ecase excl:*current-case-mode*
+	      (:case-sensitive-lower #'string-downcase)
+	      (:case-insensitive-upper #'string-upcase))
+	    name)
+   #-allegro
+   (string-upcase name)
+   package))
+
 (defun make-type-constraint (name)
-  (let ((type (or (find-symbol (string-upcase name) "PLUMP-DOM")
-                  (find-symbol (string-upcase name))
+  (let ((type (or (find-symbol* name 'plump-dom)
+                  (find-symbol* name)
                   (error "No such PLUMP-DOM class: ~s" name))))
     (or (subtypep type 'plump-dom:node)
         (error "~s is not a PLUMP-DOM:NODE subclass." name))

@@ -58,7 +58,7 @@ This really shouldn't happen unless you're passing raw lists
 for the selector to the matcher."))
 
 (define-condition complete-match-pair (condition)
-  ((%value :initarg :value :initform NIL :accessor value))
+  ((%value :initarg :value :initform nil :accessor value))
   (:documentation "Condition signalled to immediately return from MATCH-PAIR."))
 
 (defun split-member (item split string)
@@ -166,7 +166,7 @@ Returns T if all constraints match, NIL otherwise."
   (loop for constraint in (cdr matcher)
         always (match-constraint constraint node)))
 
-(declaim (ftype (function (character list plump:node (function (plump:node) T))
+(declaim (ftype (function (character list plump:node (function (plump:node) t))
                           (values &optional null))
                 match-pair-depth))
 (defun match-pair-depth (combinator matcher parent matching-nodes-processor)
@@ -232,7 +232,7 @@ match as the only argument."
 Returns a vector of matching nodes."
   (declare (optimize speed))
   (handler-case
-      (let ((resultset (make-array (length nodes) :adjustable T :fill-pointer 0)))
+      (let ((resultset (make-array (length nodes) :adjustable t :fill-pointer 0)))
         (case combinator
           (#\Space
            (labels ((match-recursive (nodes)
@@ -288,7 +288,7 @@ Returns an array of mached nodes."
   (let ((group (cdr group)))
     (ecase search-type
         (:depth-first
-         (let* ((result (make-array 10 :adjustable T :fill-pointer 0)))
+         (let* ((result (make-array 10 :adjustable t :fill-pointer 0)))
            (labels ((add-to-result (node)
                       (vector-push-extend node result))
                     (search-node (node group)
@@ -313,7 +313,7 @@ Returns an array of mached nodes."
              result)))
       (:breadth-first
        (loop with nodes = (etypecase root-node
-                            (plump:node (make-array 1 :initial-element root-node :adjustable T :fill-pointer T))
+                            (plump:node (make-array 1 :initial-element root-node :adjustable t :fill-pointer t))
                             (vector root-node)
                             (list (coerce root-node 'vector)))
              for combinator = (pop group)
@@ -366,26 +366,26 @@ SEARCH-TYPE --- Select the search algorithm, options are \":depth-first\" and \"
                  (#\Space
                   (loop do (setf node (parent node))
                            (when (or (not node) (root-p node))
-                             (return-from match-group-backwards NIL))
+                             (return-from match-group-backwards nil))
                         until (match-matcher matcher node)))
                  (#\>
                   (setf node (parent node))
                   (unless (and node (not (root-p node)) (match-matcher matcher node))
-                    (return-from match-group-backwards NIL)))
+                    (return-from match-group-backwards nil)))
                  (#\+
                   (setf node (previous-element node))
                   (unless (and node (match-matcher matcher node))
-                    (return-from match-group-backwards NIL)))
+                    (return-from match-group-backwards nil)))
                  (#\~
                   (loop for i of-type fixnum downfrom (child-position node) above 0
                         for sibling = (aref (family node) i)
                         do (when (match-matcher matcher sibling)
                              (setf node sibling)
                              (return))
-                        finally (return-from match-group-backwards NIL))))
-            finally (return T)))))
+                        finally (return-from match-group-backwards nil))))
+            finally (return t)))))
 
-(declaim (ftype (function (T plump:node) boolean) node-matches-p))
+(declaim (ftype (function (t plump:node) boolean) node-matches-p))
 (defun node-matches-p (selector node)
   "Tests whether the node matches the selector.
 

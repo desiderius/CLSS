@@ -15,9 +15,9 @@
         ((find #\n n)
          (let ((ppos (position #\+ n)))
            (if ppos
-               (= (+ (mod i (parse-integer n :junk-allowed T)) (parse-integer (subseq n (1+ ppos)))) 0)
-               (= (mod i (parse-integer n :junk-allowed T)) 0))))
-        (T (= (parse-integer n) i))))
+               (= (+ (mod i (parse-integer n :junk-allowed t)) (parse-integer (subseq n (1+ ppos)))) 0)
+               (= (mod i (parse-integer n :junk-allowed t)) 0))))
+        (t (= (parse-integer n) i))))
 
 (define-pseudo-selector nth-child (node n)
   (match-nth (1+ (element-position node)) n))
@@ -137,4 +137,4 @@
 ;;; Extra extensions specific to CLSS
 
 (define-pseudo-selector first-only (node)
-  (signal 'complete-match-pair :value (make-array 1 :initial-element node :adjustable T :fill-pointer T)))
+  (signal 'complete-match-pair :value (make-array 1 :initial-element node :adjustable t :fill-pointer t)))
